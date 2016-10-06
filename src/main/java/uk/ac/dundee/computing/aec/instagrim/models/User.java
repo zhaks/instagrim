@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package uk.ac.dundee.computing.aec.instagrim.models;
 
 import com.datastax.driver.core.BoundStatement;
@@ -16,47 +15,54 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
+import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  *
  * @author Administrator
  */
 public class User {
+
     Cluster cluster;
-    public User(){
-        
+    public User() {
+
     }
-    
-    public boolean RegisterUser(String username, String Password){
-        AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
-        String EncodedPassword=null;
-        try {
-            EncodedPassword= sha1handler.SHA1(Password);
-        }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
+
+    public boolean RegisterUser(String username, String Password) {
+        String saltStr = null;
+        AeSimpleSHA1 sha1handler = new AeSimpleSHA1();
+        String EncodedPassword = null;
+        Random sr = new SecureRandom();
+            byte[] salt = new byte[16];
+            sr.nextBytes(salt);
+            for (int i = 0; i<16; i++) {
+                String[] s =new String[salt[i]];
+                saltStr = saltStr + s;
+            }
+        try {           
+            EncodedPassword = sha1handler.SHA1(Password + saltStr);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException et) {
             System.out.println("Can't check your password");
             return false;
         }
+
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password) Values(?,?)");
-       
+        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,salt) Values(?,?,?)");
+
         BoundStatement boundStatement = new BoundStatement(ps);
         session.execute( // this is where the query is executed
                 boundStatement.bind( // here you are binding the 'boundStatement'
-                        username,EncodedPassword));
+                        username, EncodedPassword, saltStr));
         //We are assuming this always works.  Also a transaction would be good here !
-        
+
         return true;
     }
-    
-    public boolean IsValidUser(String username, String Password){
-        AeSimpleSHA1 sha1handler=  new AeSimpleSHA1();
-        String EncodedPassword=null;
-        try {
-            EncodedPassword= sha1handler.SHA1(Password);
-        }catch (UnsupportedEncodingException | NoSuchAlgorithmException et){
-            System.out.println("Can't check your password");
-            return false;
-        }
+
+    public boolean IsValidUser(String username, String Password) {
+        AeSimpleSHA1 sha1handler = new AeSimpleSHA1();
+        String EncodedPassword = null;
+
         Session session = cluster.connect("instagrim");
         PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
         ResultSet rs = null;
@@ -69,19 +75,26 @@ public class User {
             return false;
         } else {
             for (Row row : rs) {
-               
+
                 String StoredPass = row.getString("password");
-                if (StoredPass.compareTo(EncodedPassword) == 0)
+                String saltedPass = row.getString("salt");
+                try {
+                    EncodedPassword = sha1handler.SHA1(Password+saltedPass);
+                } catch (UnsupportedEncodingException | NoSuchAlgorithmException et) {
+                    System.out.println("Can't check your password");
+                    return false;
+                }
+                if (StoredPass.compareTo(EncodedPassword) == 0) {
                     return true;
+                }
             }
         }
-   
-    
-    return false;  
+
+        return false;
     }
-       public void setCluster(Cluster cluster) {
+
+    public void setCluster(Cluster cluster) {
         this.cluster = cluster;
     }
 
-    
 }
