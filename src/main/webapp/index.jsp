@@ -22,25 +22,31 @@
         <nav>
             <ul>
 
-               
-                <li><a href="upload.jsp">Upload</a></li>
-                    <%
-                        
-                        LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
-                        if (lg != null) {
-                            String UserName = lg.getUsername();
-                            if (lg.getlogedin()) {
-                    %>
 
+                <%
+
+                    LoggedIn lg = (LoggedIn) session.getAttribute("LoggedIn");
+                    if (lg != null) {
+                        String UserName = lg.getUsername();
+                        if (lg.getlogedin()) {
+                %>
+                <li><a href="upload.jsp">Upload</a></li>
                 <li><a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a></li>
                     <%}
-                            }else{
-                                %>
-                 <li><a href="register.jsp">Register</a></li>
-                <li><a href="login.jsp">Login</a></li>
-                <%
-                                        
-                            
+                    } else {
+                    %>
+
+                <li>Login</li>
+                <form method="POST"  action="Login">
+                    <ul>
+                        <li>User Name <input type="text" name="username"></li>
+                        <li>Password <input type="password" name="password"></li>
+                    </ul>
+                    <br/>
+                    <input type="submit" value="Login"> 
+                </form>
+                <li><a href="register.jsp">Register</a></li>
+                    <%
                     }%>
             </ul>
         </nav>
