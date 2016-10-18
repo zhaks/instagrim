@@ -27,13 +27,13 @@
                     if (lg.getlogedin()) {
             %>
             <div class="loginbox">
-            <a href="upload">Upload</a>
-            <a>|</a>
-            <a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a>
-            <a>|</a>
-            <a href="index">Home</a>
-            <a>|</a>
-            <a href="login">Profile</a>
+                <a href="upload">Upload</a>
+                <a>|</a>
+                <a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a>
+                <a>|</a>
+                <a href="index">Home</a>
+                <a>|</a>
+                <a href="login">Profile</a>
             </div>
             <%}
             } else {
@@ -48,16 +48,22 @@
                     <a class="registerc" href="register" >Register</a></li>
                 </form>
             </div>           
-            <% 
+            <%
                 }
             %>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
         </header>
 
-        <div>  
-            
+        <div class="pictureContainer">  
+
             <%
                 java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
                 if (lsPics == null) {
+                    response.sendRedirect("/Instagrim/index");
             %>
             <p>No Pictures found</p>
             <%
@@ -67,8 +73,8 @@
                 while (iterator.hasNext()) {
                     Pic p = (Pic) iterator.next();
 
-            %>
-            <a href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
+            %>           
+            <a class="picture" href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
 
                     }
                 }
