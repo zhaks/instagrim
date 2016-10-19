@@ -25,7 +25,7 @@ public final class Keyspaces {
                     + " processed blob,"
                     + " imagelength int,"
                     + " thumblength int,"
-                    + "  processedlength int,"
+                    + " processedlength int,"
                     + " type  varchar,"
                     + " name  varchar,"
                     + " PRIMARY KEY (picid)"
@@ -36,18 +36,20 @@ public final class Keyspaces {
                     + "pic_added timestamp,\n"
                     + "PRIMARY KEY (user,pic_added)\n"
                     + ") WITH CLUSTERING ORDER BY (pic_added desc);";
-            String CreateAddressType = "CREATE TYPE if not exists instagrim.address (\n"
-                    + "      street text,\n"
-                    + "      city text,\n"
-                    + "      zip int\n"
-                    + "  );";
+            String CreateCommentsTable = "CREATE TABLE if not exists instagrim.comments ("
+                    + " comid uuid, "
+                    + " user varchar,"
+                    + " picid uuid, "
+                    + " com_added timestamp,\n"
+                    + " PRIMARY KEY (comid)"
+                    + ")";
             String CreateUserProfile = "CREATE TABLE if not exists instagrim.userprofiles (\n"
                     + "      login text PRIMARY KEY,\n"
-                     + "     password text,\n"
+                    + "      password text,\n"
+                    + "      salt text,\n"
                     + "      first_name text,\n"
                     + "      last_name text,\n"
                     + "      email set<text>,\n"
-                    + "      addresses  map<text, frozen <address>>\n"
                     + "  );";
             Session session = c.connect();
             try {
@@ -69,7 +71,7 @@ public final class Keyspaces {
                 SimpleStatement cqlQuery = new SimpleStatement(CreatePicTable);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create tweet table " + et);
+                System.out.println("Can't create pic table " + et);
             }
             System.out.println("" + Createuserpiclist);
 
@@ -79,12 +81,13 @@ public final class Keyspaces {
             } catch (Exception et) {
                 System.out.println("Can't create user pic list table " + et);
             }
-            System.out.println("" + CreateAddressType);
+            System.out.println("" + CreateCommentsTable);
+
             try {
-                SimpleStatement cqlQuery = new SimpleStatement(CreateAddressType);
+                SimpleStatement cqlQuery = new SimpleStatement(CreateCommentsTable);
                 session.execute(cqlQuery);
             } catch (Exception et) {
-                System.out.println("Can't create Address type " + et);
+                System.out.println("Can't create comment table " + et);
             }
             System.out.println("" + CreateUserProfile);
             try {
@@ -96,7 +99,7 @@ public final class Keyspaces {
             session.close();
 
         } catch (Exception et) {
-            System.out.println("Other keyspace or coulm definition error" + et);
+            System.out.println("Other keyspace or column definition error" + et);
         }
 
     }

@@ -1,18 +1,22 @@
 <%-- 
-    Document   : loginF.jsp
-    Created on : Sep 28, 2014, 12:04:14 PM
-    Author     : Administrator
+    Document   : view
+    Created on : 19-Oct-2016, 18:35:22
+    Author     : Daniel
 --%>
 
+<%@page import="uk.ac.dundee.computing.aec.instagrim.lib.Convertors"%>
+<%@page import="uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="uk.ac.dundee.computing.aec.instagrim.stores.*" %>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
+    </head>
+    <head>
         <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="main.css" />
-
+        <link rel="stylesheet" type="text/css" href="Intsagrim/main.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
         <header>
@@ -50,16 +54,14 @@
                 </form>
             </div>           
             <%
-                }%>
+                }
+            %>
             <br>
             <br>
             <br>
             <br>
             <br>
         </header>
-
-        <footer>
-
-        </footer>
+        <a href="/Instagrim/Image/${location}"><img src="/Instagrim/Image/${location}" height="500px" width="auto"></a>
     </body>
 </html>

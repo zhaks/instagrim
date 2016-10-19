@@ -14,24 +14,27 @@ import java.nio.ByteBuffer;
  */
 public class Pic {
 
-    private ByteBuffer bImage = null;
-    private int length;
-    private String type;
-    private java.util.UUID UUID=null;
-    
+    ByteBuffer bImage = null;
+    int length;
+    String type;
+    java.util.UUID UUID = null;
+
     public void Pic() {
 
     }
-    public void setUUID(java.util.UUID UUID){
-        this.UUID =UUID;
+
+    public void setUUID(java.util.UUID UUID) {
+        this.UUID = UUID;
     }
-    public String getSUUID(){
+
+    public String getSUUID() {
         return UUID.toString();
     }
-    public void setPic(ByteBuffer bImage, int length,String type) {
+
+    public void setPic(ByteBuffer bImage, int length, String type) {
         this.bImage = bImage;
         this.length = length;
-        this.type=type;
+        this.type = type;
     }
 
     public ByteBuffer getBuffer() {
@@ -41,13 +44,13 @@ public class Pic {
     public int getLength() {
         return length;
     }
-    
-    public String getType(){
+
+    public String getType() {
         return type;
     }
 
     public byte[] getBytes() {
-         
+
         byte image[] = Bytes.getArray(bImage);
         return image;
     }

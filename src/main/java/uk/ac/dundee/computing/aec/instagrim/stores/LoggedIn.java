@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package uk.ac.dundee.computing.aec.instagrim.stores;
 
 /**
@@ -11,29 +10,35 @@ package uk.ac.dundee.computing.aec.instagrim.stores;
  * @author Administrator
  */
 public class LoggedIn {
-    boolean logedin=false;
-    String Username=null;
-    public void LogedIn(){
-        
+
+    boolean loggedin = false;
+    String Username = null;
+
+    public void LogedIn() {
+
     }
-    
-    public void setUsername(String name){
-        this.Username=name;
+
+    public void setUsername(String name) {
+        this.Username = name;
     }
-    public String getUsername(){
+
+    public String getUsername() {
         return Username;
     }
-    public void setLogedin(){
-        logedin=true;
+
+    public void setLogedin() {
+        loggedin = true;
     }
-    public void setLogedout(){
-        logedin=false;
+
+    public void setLogedout() {
+        loggedin = false;
     }
-    
-    public void setLoginState(boolean logedin){
-        this.logedin=logedin;
+
+    public void setLoginState(boolean logedin) {
+        this.loggedin = logedin;
     }
-    public boolean getlogedin(){
-        return logedin;
+
+    public boolean getlogedin() {
+        return loggedin;
     }
 }

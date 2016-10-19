@@ -3,9 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package uk.ac.dundee.computing.aec.instagrin.filters;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -117,8 +114,8 @@ public class ProtectPages implements Filter {
 	LoggedIn li=(LoggedIn)session.getAttribute("LoggedIn");
         System.out.println("Session in filter "+session);
         if ((li == null)  || (li.getlogedin()==false)){
-               System.out.println("Foward to login");
-                RequestDispatcher rd=request.getRequestDispatcher("/login.jsp");
+               System.out.println("Foward to home");
+                RequestDispatcher rd=request.getRequestDispatcher("/home");
 		rd.forward(request,response);
 
             

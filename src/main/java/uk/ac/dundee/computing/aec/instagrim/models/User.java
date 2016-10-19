@@ -17,6 +17,7 @@ import uk.ac.dundee.computing.aec.instagrim.lib.AeSimpleSHA1;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 import java.util.Random;
 import java.security.SecureRandom;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -25,38 +26,57 @@ import java.security.SecureRandom;
 public class User {
 
     Cluster cluster;
+
     public User() {
 
     }
 
     public boolean RegisterUser(String username, String Password) {
-        String saltStr = null;
-        AeSimpleSHA1 sha1handler = new AeSimpleSHA1();
-        String EncodedPassword = null;
-        Random sr = new SecureRandom();
-            byte[] salt = new byte[16];
-            sr.nextBytes(salt);
-            for (int i = 0; i<16; i++) {
-                String[] s =new String[salt[i]];
-                saltStr = saltStr + s;
+        if (checkUsername(username)) {
+            String saltStr = null;
+            AeSimpleSHA1 sha1handler = new AeSimpleSHA1();
+            String EncodedPassword = null;
+            Random sr = new SecureRandom();
+            byte[] saltLi = new byte[8];
+            sr.nextBytes(saltLi);
+            String s = "";
+
+            for (int i = 1; i < 8; i++) {
+                s = s + saltLi[i];
             }
-        try {           
-            EncodedPassword = sha1handler.SHA1(Password + saltStr);
-        } catch (UnsupportedEncodingException | NoSuchAlgorithmException et) {
-            System.out.println("Can't check your password");
+            saltStr = s;
+            try {
+                EncodedPassword = sha1handler.SHA1(Password + saltStr);
+            } catch (UnsupportedEncodingException | NoSuchAlgorithmException et) {
+                System.out.println("Can't check your password");
+                return false;
+            }
+
+            Session session = cluster.connect("instagrim");
+            PreparedStatement ps = session.prepare("insert into userprofiles (login,password,salt) Values(?,?,?)");
+
+            BoundStatement boundStatement = new BoundStatement(ps);
+            session.execute(boundStatement.bind(username, EncodedPassword, saltStr));
+            //We are assuming this always works.  Also a transaction would be good here !
+
+            return true;
+        } else {
             return false;
         }
+    }
 
+    public boolean checkUsername(String name) {
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("insert into userprofiles (login,password,salt) Values(?,?,?)");
-
+        PreparedStatement ps = session.prepare("select login from userprofiles where login =?");
+        ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
-        session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        username, EncodedPassword, saltStr));
-        //We are assuming this always works.  Also a transaction would be good here !
+        rs = session.execute(boundStatement.bind(name));
+        if (rs.isExhausted()) {
+            return false;
+        } else {
+            return true;
+        }
 
-        return true;
     }
 
     public boolean IsValidUser(String username, String Password) {
@@ -64,14 +84,11 @@ public class User {
         String EncodedPassword = null;
 
         Session session = cluster.connect("instagrim");
-        PreparedStatement ps = session.prepare("select password from userprofiles where login =?");
+        PreparedStatement ps = session.prepare("select * from userprofiles where login =?");
         ResultSet rs = null;
         BoundStatement boundStatement = new BoundStatement(ps);
-        rs = session.execute( // this is where the query is executed
-                boundStatement.bind( // here you are binding the 'boundStatement'
-                        username));
+        rs = session.execute(boundStatement.bind(username));
         if (rs.isExhausted()) {
-            System.out.println("No Images returned");
             return false;
         } else {
             for (Row row : rs) {
@@ -79,7 +96,7 @@ public class User {
                 String StoredPass = row.getString("password");
                 String saltedPass = row.getString("salt");
                 try {
-                    EncodedPassword = sha1handler.SHA1(Password+saltedPass);
+                    EncodedPassword = sha1handler.SHA1(Password + saltedPass);
                 } catch (UnsupportedEncodingException | NoSuchAlgorithmException et) {
                     System.out.println("Can't check your password");
                     return false;

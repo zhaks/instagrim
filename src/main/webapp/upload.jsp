@@ -17,6 +17,7 @@
     </head>
     <body>
         <header>
+            <a href="/Instagrim/index" ><img src="logo.jpg" height="70px" display="inline-block" float="left"></a>
             <div class="titlehead">
                 <h1>InstaGrim! </h1>
                 <h2 display="inline"><i>Your world in Black and White</i></h2>
@@ -28,13 +29,13 @@
                     if (lg.getlogedin()) {
             %>
             <div class="loginbox">
-            <a href="upload">Upload</a>
-            <a>|</a>
-            <a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a>
+                <a href="upload">Upload</a>
+                <a>|</a>
+                <a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a>
             </div>
-                <%}
-                } else {
-                %>
+            <%}
+            } else {
+            %>
             <div class="loginbox">
                 <form method="POST"  action="Login">
                     <input type="text" name="username" placeholder="Username" display="inline">
@@ -46,9 +47,14 @@
                 </form>
             </div>           
             <%
-                    }%>
+                }%>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
         </header>
- 
+
         <article>
             <h3>File Upload</h3>
             <form method="POST" enctype="multipart/form-data" action="Image">
@@ -60,9 +66,7 @@
 
         </article>
         <footer>
-            <ul>
-                <li class="footer"><a href="/Instagrim">Home</a></li>
-            </ul>
+
         </footer>
     </body>
 </html>

@@ -16,8 +16,10 @@
     </head>
     <body>
         <header>
-            <div class="titlehead">
-                <h1>InstaGrim! </h1>
+            <a href="/Instagrim/index" ><img src="logo.jpg" height="70px" display="inline-block" float="left"></a>
+
+            <div class="titlehead">    
+                <h1 display="inline">InstaGrim! </h1>
                 <h2 display="inline"><i>Your world in Black and White</i></h2>
             </div>
             <%
@@ -56,6 +58,8 @@
             <br>
             <br>
             <br>
+            <br>
+            <br>
         </header>
 
         <div class="pictureContainer">  
@@ -72,13 +76,13 @@
                 iterator = lsPics.iterator();
                 while (iterator.hasNext()) {
                     Pic p = (Pic) iterator.next();
-
             %>           
-            <a class="picture" href="/Instagrim/Image/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/><%
+            <a class="picture" href="/Instagrim/View/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/>
 
+            <%
                     }
                 }
-                %>            
+            %>            
         </div>
         <footer>
 
