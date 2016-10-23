@@ -11,13 +11,12 @@
 <html>
     <head>
         <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="main.css" />
+        <link rel="stylesheet" type="text/css" href="/Instagrim/resources/main.css" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
         <header>
-            <a href="/Instagrim/index" ><img src="logo.jpg" height="70px" display="inline-block" float="left"></a>
-
+            <a href="/Instagrim/index" ><img src="/Instagrim/resources/logo.jpg" height="70px" display="inline-block" float="left"></a>
             <div class="titlehead">    
                 <h1 display="inline">InstaGrim! </h1>
                 <h2 display="inline"><i>Your world in Black and White</i></h2>
@@ -29,13 +28,16 @@
                     if (lg.getlogedin()) {
             %>
             <div class="loginbox">
-                <a href="upload">Upload</a>
+                <a href="/Instagrim/upload">Upload</a>
                 <a>|</a>
                 <a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a>
                 <a>|</a>
-                <a href="index">Home</a>
+                <a href="/Instagrim/index">Home</a>
                 <a>|</a>
-                <a href="login">Profile</a>
+                <a href="/Instagrim/login">Profile</a>
+                <a>|</a>
+                <a href="/Instagrim/logout.jsp">Logout</a>
+
             </div>
             <%}
             } else {
@@ -47,7 +49,7 @@
                     <input type="password" name="password" placeholder="Password" display="inline">
                     <input type="submit" value="Login"> 
                     <br>
-                    <a class="registerc" href="register" >Register</a></li>
+                    <a class="registerc" href="/Instagrim/register" >Register</a></li>
                 </form>
             </div>           
             <%
@@ -68,22 +70,24 @@
                 java.util.LinkedList<Pic> lsPics = (java.util.LinkedList<Pic>) request.getAttribute("Pics");
                 if (lsPics == null) {
                     response.sendRedirect("/Instagrim/index");
+
             %>
             <p>No Pictures found</p>
-            <%
-            } else {
+            <%            } else {
                 Iterator<Pic> iterator;
                 iterator = lsPics.iterator();
                 while (iterator.hasNext()) {
                     Pic p = (Pic) iterator.next();
             %>           
-            <a class="picture" href="/Instagrim/View/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"></a><br/>
-
+            <div display="flex" flex-direction="row" justify-content="space-around">
+                <a class="picture" href="/Instagrim/View/<%=p.getSUUID()%>" ><img src="/Instagrim/Thumb/<%=p.getSUUID()%>"  display="flex" flex-direction="column"></a><br/>
+            </div>
             <%
                     }
                 }
             %>            
         </div>
+
         <footer>
 
         </footer>

@@ -31,7 +31,8 @@ public class User {
 
     }
 
-    public boolean RegisterUser(String username, String Password) {
+    public boolean RegisterUser(String username, String Password, String email, String first, String last) {
+        username = username.toLowerCase();
         if (checkUsername(username)) {
             String saltStr = null;
             AeSimpleSHA1 sha1handler = new AeSimpleSHA1();
@@ -51,12 +52,20 @@ public class User {
                 System.out.println("Can't check your password");
                 return false;
             }
-
+            if (first == null) {
+                first = " ";
+            }
+            if (last == null) {
+                last = " ";
+            }
+            if (email == null) {
+                email = " ";
+            }
             Session session = cluster.connect("instagrim");
-            PreparedStatement ps = session.prepare("insert into userprofiles (login,password,salt) Values(?,?,?)");
+            PreparedStatement ps = session.prepare("insert into userprofiles (login, password, salt, first_name, last_name, email) Values(?,?,?,?,?,?)");
 
             BoundStatement boundStatement = new BoundStatement(ps);
-            session.execute(boundStatement.bind(username, EncodedPassword, saltStr));
+            session.execute(boundStatement.bind(username, EncodedPassword, saltStr, first, last, email));
             //We are assuming this always works.  Also a transaction would be good here !
 
             return true;
@@ -72,14 +81,29 @@ public class User {
         BoundStatement boundStatement = new BoundStatement(ps);
         rs = session.execute(boundStatement.bind(name));
         if (rs.isExhausted()) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public ResultSet getProfile(String name) {
+        Session session = cluster.connect("instagrim");
+        PreparedStatement ps = session.prepare("select login,first_name,last_name,email from userprofiles where login =?");
+        ResultSet rs = null;
+        BoundStatement boundStatement = new BoundStatement(ps);
+        rs = session.execute(boundStatement.bind(name));
+        if (rs.isExhausted()) {
+            return null;
+        } else {
+            return rs;
         }
 
     }
 
     public boolean IsValidUser(String username, String Password) {
+        username = username.toLowerCase();
         AeSimpleSHA1 sha1handler = new AeSimpleSHA1();
         String EncodedPassword = null;
 

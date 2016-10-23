@@ -9,16 +9,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Instagrim</title>
-        <link rel="stylesheet" type="text/css" href="main.css" />
-
+        <link rel="stylesheet" type="text/css" href="/Instagrim/resources/main.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
         <header>
-            <a href="/Instagrim/index" ><img src="logo.jpg" height="70px" display="inline-block" float="left"></a>
-            <div class="titlehead">
-                <h1>InstaGrim! </h1>
+            <a href="/Instagrim/index" ><img src="/Instagrim/resources/logo.jpg" height="70px" display="inline-block" float="left"></a>
+
+            <div class="titlehead">    
+                <h1 display="inline">InstaGrim! </h1>
                 <h2 display="inline"><i>Your world in Black and White</i></h2>
             </div>
             <%
@@ -28,13 +28,15 @@
                     if (lg.getlogedin()) {
             %>
             <div class="loginbox">
-                <a href="upload">Upload</a>
+                <a href="/Instagrim/upload">Upload</a>
                 <a>|</a>
                 <a href="/Instagrim/Images/<%=lg.getUsername()%>">Your Images</a>
                 <a>|</a>
-                <a href="index">Home</a>
+                <a href="/Instagrim/index">Home</a>
                 <a>|</a>
-                <a href="login">Profile</a>
+                <a href="/Instagrim/login">Profile</a>
+                <a>|</a>
+                <a href="/Instagrim/logout.jsp">Logout</a>
             </div>
             <%}
             } else {
@@ -46,18 +48,34 @@
                     <input type="password" name="password" placeholder="Password" display="inline">
                     <input type="submit" value="Login"> 
                     <br>
-                    <a class="registerc" href="register" >Register</a></li>
+                    <a class="registerc" href="/Instagrim/register" >Register</a></li>
                 </form>
             </div>           
             <%
-                }%>
+                }
+            %>
+            <br>
+            <br>
             <br>
             <br>
             <br>
             <br>
             <br>
         </header>
-
+            <table border="1">
+                <tr>
+                    <td>Username</td><td><%=session.getAttribute("Username")%></td>
+                </tr>
+                <tr>
+                    <td>First Name</td><td><%=session.getAttribute("fName")%></td>
+                </tr>
+                <tr>
+                    <td>Last Name</td><td><%=session.getAttribute("sName")%></td>
+                </tr>
+                <tr>
+                    <td>Email Address</td><td><%=session.getAttribute("email")%></td>
+                </tr>
+            </table>
         <footer>
 
         </footer>

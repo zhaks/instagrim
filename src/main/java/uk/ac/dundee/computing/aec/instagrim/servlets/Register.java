@@ -42,20 +42,22 @@ public class Register extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        String username = request.getParameter("nUsername");
+        String password = request.getParameter("nPassword");
+        String email = request.getParameter("nEmail");
+        String first = request.getParameter("nFirst");
+        String last = request.getParameter("nLast");
 
         User us = new User();
         us.setCluster(cluster);
-        if (us.RegisterUser(username, password)) {
+        if (us.RegisterUser(username, password,email,first,last)) {
             request.getSession().setAttribute("validUser", true);
-                    response.sendRedirect("register");                    
+            response.sendRedirect("register");
 
         } else {
             request.getSession().setAttribute("validUser", false);
             response.sendRedirect("index");
         }
-
 
     }
 

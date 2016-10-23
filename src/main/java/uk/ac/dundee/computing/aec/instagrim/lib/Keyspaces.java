@@ -36,20 +36,21 @@ public final class Keyspaces {
                     + "pic_added timestamp,\n"
                     + "PRIMARY KEY (user,pic_added)\n"
                     + ") WITH CLUSTERING ORDER BY (pic_added desc);";
-            String CreateCommentsTable = "CREATE TABLE if not exists instagrim.comments ("
-                    + " comid uuid, "
-                    + " user varchar,"
-                    + " picid uuid, "
-                    + " com_added timestamp,\n"
-                    + " PRIMARY KEY (comid)"
-                    + ")";
             String CreateUserProfile = "CREATE TABLE if not exists instagrim.userprofiles (\n"
-                    + "      login text PRIMARY KEY,\n"
-                    + "      password text,\n"
-                    + "      salt text,\n"
-                    + "      first_name text,\n"
-                    + "      last_name text,\n"
-                    + "      email set<text>,\n"
+                    + "      login varchar PRIMARY KEY,\n"
+                    + "      password varchar,\n"
+                    + "      salt varchar,\n"
+                    + "      first_name varchar,\n"
+                    + "      last_name varchar,\n"
+                    + "      email varchar,\n"
+                    + "  );";
+            String CreateComments = "CREATE TABLE if not exists instagrim.comments (\n"
+                    + "      login text,\n"
+                    + "      picuuid text,\n"
+                    + "      commentuuid uuid,\n"
+                    + "      commenttext text,\n"          
+                    + "      commentadded timestamp,\n"
+                    + "      PRIMARY KEY (commentUUID)"
                     + "  );";
             Session session = c.connect();
             try {
@@ -81,10 +82,10 @@ public final class Keyspaces {
             } catch (Exception et) {
                 System.out.println("Can't create user pic list table " + et);
             }
-            System.out.println("" + CreateCommentsTable);
+            System.out.println("" + CreateComments);
 
             try {
-                SimpleStatement cqlQuery = new SimpleStatement(CreateCommentsTable);
+                SimpleStatement cqlQuery = new SimpleStatement(CreateComments);
                 session.execute(cqlQuery);
             } catch (Exception et) {
                 System.out.println("Can't create comment table " + et);

@@ -6,6 +6,8 @@
 package uk.ac.dundee.computing.aec.instagrim.servlets;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Row;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -26,7 +28,7 @@ import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
  *
  * @author Administrator
  */
-@WebServlet(name = "Login", urlPatterns = {"/login","/Login", "/Login/*"})
+@WebServlet(name = "Login", urlPatterns = {"/login", "/Login", "/Login/*", "logout"})
 public class Login extends HttpServlet {
 
     Cluster cluster = null;
@@ -55,7 +57,7 @@ public class Login extends HttpServlet {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-
+        username = username.toLowerCase();
         User us = new User();
         us.setCluster(cluster);
         boolean isValid = us.IsValidUser(username, password);
@@ -65,9 +67,18 @@ public class Login extends HttpServlet {
             LoggedIn lg = new LoggedIn();
             lg.setLogedin();
             lg.setUsername(username);
-            request.setAttribute("LoggedIn", lg);
             session.setAttribute("LoggedIn", lg);
+           
+            session.setAttribute("Username", username);
             System.out.println("Session in servlet " + session);
+            ResultSet rs = us.getProfile(username);
+            if (!rs.isExhausted()) {
+                for (Row row : rs) {
+                    session.setAttribute("fName",row.getString("first_name"));
+                    session.setAttribute("sName",row.getString("last_name"));
+                    session.setAttribute("email",row.getString("email"));
+                }
+            }
             RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
             rd.forward(request, response);
 
@@ -86,4 +97,4 @@ public class Login extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    }
+}

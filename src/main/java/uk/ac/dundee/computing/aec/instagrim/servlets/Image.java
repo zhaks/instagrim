@@ -24,7 +24,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import uk.ac.dundee.computing.aec.instagrim.lib.CassandraHosts;
 import uk.ac.dundee.computing.aec.instagrim.lib.Convertors;
+import uk.ac.dundee.computing.aec.instagrim.models.CommentModel;
 import uk.ac.dundee.computing.aec.instagrim.models.PicModel;
+import uk.ac.dundee.computing.aec.instagrim.stores.Cmts;
 import uk.ac.dundee.computing.aec.instagrim.stores.LoggedIn;
 import uk.ac.dundee.computing.aec.instagrim.stores.Pic;
 
@@ -88,7 +90,7 @@ public class Image extends HttpServlet {
                 DisplayImage(Convertors.DISPLAY_THUMB, args[2], response);
                 break;
             case 4:
-                DisplayImageInPage(args[2], request, response);                
+                DisplayImageInPage(args[2], request, response);
                 break;
             default:
                 error("Bad Operator", response);
@@ -103,6 +105,7 @@ public class Image extends HttpServlet {
         java.util.LinkedList<Pic> lsPics = tm.getPicsForUser(User);
         RequestDispatcher rd = request.getRequestDispatcher("/UsersPics.jsp");
         request.setAttribute("Pics", lsPics);
+        request.setAttribute("User", User);
         rd.forward(request, response);
 
     }
@@ -130,10 +133,14 @@ public class Image extends HttpServlet {
     private void DisplayImageInPage(String Image, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PicModel tm = new PicModel();
         tm.setCluster(cluster);
-
         Pic p = tm.getPic(Convertors.DISPLAY_PROCESSED, java.util.UUID.fromString(Image));
+        CommentModel cm = new CommentModel();
+        cm.setCluster(cluster);
+        java.util.LinkedList<Cmts> lsCmts = cm.getPicComments(Image);
+        request.setAttribute("Comments", lsCmts);
         request.setAttribute("Pic", p);
         request.setAttribute("location", Image);
+        request.getSession().setAttribute("ImgLoc", Image);
         RequestDispatcher rd = request.getRequestDispatcher("/view.jsp");
         rd.forward(request, response);
 
